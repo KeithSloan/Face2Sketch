@@ -117,12 +117,33 @@ class toSPlaneFeature :
                    'Plane')
         toSPlane(obj)
         ViewProvider(obj.ViewObject)
+        obj.ViewObject.Transparency = 60
+
+        # Test if Face
+        for sel in FreeCADGui.Selection.getSelectionEx() :
+            print("Selected")
+            if sel.HasSubObjects == True :
+               if str(sel.SubObjects[0].Surface) == '<Plane object>' :
+                  print('Planar')
+                  shape = sel.SubObjects[0]
+                  #shape.exportStep('/tmp/exported.step')
+                  #shape.exportBrep('/tmp/exported.brep')
+                  Face = True
+                  print('Make Plane from Face')
+                  print(shape.Placement)
+                  print(shape.Orientation)
+                  print(shape.Surface)
+                  print(shape.Surface.Position)
+                  print(shape.Surface.Rotation)
+                  print(dir(shape.Surface))
+                  print(shape.Faces)
+                  print(shape.Faces[0].Placement)
+                  print(dir(shape.Faces[0]))
+                  print(dir(shape))
+                  obj.Placement.Base = shape.Surface.Position
+                  obj.Placement.Rotation = shape.Surface.Rotation
+
         FreeCAD.ActiveDocument.recompute()
-        # need Shape but do not want Placement
-        #obj.setEditorMode('Placement',2)
-        #print(dir(obj))
-        #print(dir(obj.ViewObject))
-        obj.ViewObject.Transparency = 20
 
     def IsActive(self):
         if FreeCAD.ActiveDocument == None:
@@ -133,9 +154,9 @@ class toSPlaneFeature :
     def GetResources(self):
         return {'Pixmap'  : 'toPlane', 'MenuText': \
                 QtCore.QT_TRANSLATE_NOOP('toSPlaneFeature',\
-                'to Plane'), 'ToolTip': \
+                'Create Plane'), 'ToolTip': \
                 QtCore.QT_TRANSLATE_NOOP('toSPlaneFeature',\
-                'to Plane')}
+                'Create Plane')}
 
 FreeCADGui.addCommand('toSketchCommand',toSketchFeature())
 FreeCADGui.addCommand('toSPlaneCommand',toSPlaneFeature())
