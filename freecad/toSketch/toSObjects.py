@@ -30,7 +30,7 @@ import FreeCAD, Part
 
 class toSPlane :
 
-    def __init__(self,obj) :
+    def __init__(self, obj) :
         AxisList = ['XY Plane','XZ Plane','YZ Plane','Custom']
         obj.addProperty("App::PropertyEnumeration","Axis","Base", \
             "Axis").Axis=AxisList
@@ -44,14 +44,16 @@ class toSPlane :
              "Custom ZDir").ZDir=1.0
         obj.addProperty("App::PropertyFloat","Length","Plane", \
              "Length").Length = 500.0 
-        self.halfLen = 250.0
         obj.addProperty("App::PropertyFloat","Width","Plane", \
              "Width").Width = 500.0 
-        self.halfWidth = 250 
         obj.setEditorMode("Placement",2)
         self.disableAxisParms(obj)
         obj.Proxy = self
 
+    def addParms(self, dirVec, pLen) :
+        print('Add Parms - dirVec '+str(dirVec)+' : '+str(pLen))
+
+  
     def enableAxisParms(self, obj) :
         print('Enable Axis Parms')
         obj.setEditorMode("XDir",0)

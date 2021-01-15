@@ -115,11 +115,9 @@ class toSPlaneFeature :
 
         obj = FreeCAD.ActiveDocument.addObject('Part::FeaturePython', \
                    'Plane')
-        toSPlane(obj)
+        toSP = toSPlane(obj)
         ViewProvider(obj.ViewObject)
         obj.ViewObject.Transparency = 60
-
-        # Test if Face
         for sel in FreeCADGui.Selection.getSelectionEx() :
             print("Selected")
             if sel.HasSubObjects == True :
@@ -131,18 +129,24 @@ class toSPlaneFeature :
                   Face = True
                   print('Make Plane from Face')
                   print(shape.Placement)
-                  print(shape.Orientation)
+                  #print(shape.Orientation)
                   print(shape.Surface)
                   print(shape.Surface.Position)
                   print(shape.Surface.Rotation)
                   print(dir(shape.Surface))
+                  #print(shape.Surface.bounds)
+                  print(dir(shape.Surface.bounds))
                   print(shape.Faces)
-                  print(shape.Faces[0].Placement)
+                  print(dir(shape.Faces[0].BoundBox))
+                  #print(shape.Faces[0].Placement)
                   print(dir(shape.Faces[0]))
-                  print(dir(shape))
-                  obj.Placement.Base = shape.Surface.Position
-                  obj.Placement.Rotation = shape.Surface.Rotation
-
+                  #print(dir(shape))
+                  #obj.Placement.Base = shape.Surface.Position
+                  #obj.Placement.Rotation = shape.Surface.Rotation
+                  dirVec = shape.Surface.Rotation.multVec(FreeCAD.Vector(0,0,1))
+                  print('dirVec : '+str(dirVec))
+                  toSP.addParms(dirVec, shape.Faces[0].BoundBox.DiagonalLength)
+        
         FreeCAD.ActiveDocument.recompute()
 
     def IsActive(self):
