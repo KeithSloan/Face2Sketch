@@ -50,7 +50,11 @@ class toSketchFeature:
                   print(dir(shape))
                   print(shape.TypeId)
                   print(shape.BoundBox)
+                  print(self.sizeBoundBox(shape.BoundBox))
                   print('Edges '+str(len(shape.Edges)))
+                  #print(dir(shape.Faces[0]))
+                  #print('Face Bound Box')
+                  #print(shape.Faces[0].BoundBox)
                   print('Faces '+str(len(shape.Faces)))
                   print('Vertexes '+str(len(shape.Vertexes)))
                   print(dir(shape.OuterWire))
@@ -59,6 +63,7 @@ class toSketchFeature:
                   print(shape.OuterWire.OrderedVertexes)
                   sketch = self.shapes2Sketch(shape,'Sketch')
                   self.addConstraints(sketch)
+                  self.dumpSketch(sketch)
         
         for sel in FreeCADGui.Selection.getSelection() :
             if sel.TypeId == 'Part::FeaturePython' and \
@@ -105,6 +110,30 @@ class toSketchFeature:
         sketch = self.shapes2Sketch(edges,'Sketch')
         self.addConstraints(sketch)
 
+    def sizeBoundBox(self, bbox) :
+        print(bbox)
+        #print(dir(bbox))
+        if bbox.ZLength == 0 :
+           return(bbox.XLength, bbox.YLength)
+        elif bbox.XLength == 0 :
+           return(bbox.YLength, bbox.ZLength)
+        else :
+           return(bbox.XLength, bbox.ZLength)
+
+    def dumpSketch(self, sketch) :
+
+        print('Dump Sketch : '+str(sketch))
+        geoList = sketch.Geometry
+        print(dir(geoList[0]))
+        print(dir(sketch.Constraints))
+
+        for i in range(sketch.GeometryCount) :
+            print(geoList[i].TypeId)
+            #print(geoList[i].Construction)
+            print(geoList[i].Content)
+            #print(geoList[i].Tag)
+            print(geoList[i].FirstParameter)
+            print(geoList[i].LastParameter)
 
     def addConstraints(self, sketch) :
         print('Add Constraints')
