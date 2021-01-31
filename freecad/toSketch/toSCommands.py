@@ -167,6 +167,7 @@ class toCurveFitFeature :
                newSketch = FreeCAD.ActiveDocument.addObject("Sketcher::SketchObject", \
                            "Fitted Sketch")
                dL = []
+               sL = []
                start = 0
                print('Geometry Count : '+str(sel.GeometryCount))
                for i in range(sel.GeometryCount):
@@ -178,18 +179,22 @@ class toCurveFitFeature :
                       #print(gL[i].EndPoint)
                       ab = gL[i].StartPoint.sub(gL[i].EndPoint)
                       dL.append(ab.Length)
+                      if ab.x != 0 :
+                         sL.append(ab.y / ab.x)
+                      else :
+                         sL.append(None)
                    else :
                       # Add non Line Geometry 
                       newsketch.addGeometry(gL[i], False)
                       print('Break - need to process Lines')
                       if len(dL) > 0 :
-                         self.processLines(newSketch,start,i,gL,dL)
+                         self.processLines(newSketch,start,i,gL,dL,sL)
                          dL = []
                          start = i
                       # append to new geometry
                # Catch tail end
                if len(dL) > 0 :
-                  self.processLines(newSketch,start,i,gL,dL)
+                  self.processLines(newSketch,start,i,gL,dL,sL)
                #print(dir(sel.Geometry))
                #print(newSketch.Geometry)
                newSketch.recompute()
@@ -246,7 +251,7 @@ class toCurveFitFeature :
            #except :
            #   print('You need to install NURBS-Python : geomdl')
 
-    def processLines(self, sketch, start, end, gL, dL) :
+    def processLines(self, sketch, start, end, gL, dL, sL) :
         import numpy
 
         threshold = 3 * numpy.median(dL)
